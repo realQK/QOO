@@ -3,63 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <title>JSON Display</title>
+<style>
+  .json-container {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .json-container h2 {
+    color: #333;
+  }
+  .attribute {
+    margin: 10px 0;
+  }
+  .attribute span {
+    font-weight: bold;
+  }
+</style>
 <script>
-// 等待窗口加载完成
 window.onload = function() {
-  // 使用 fetch API 加载 JSON 文件
   fetch('MRK.json')
     .then(response => response.json())
     .then(data => {
-      const contentDiv = document.getElementById('jsonContent');
-      
-      // 添加标题
-      const title = document.createElement('h2');
-      title.textContent = data.title;
-      contentDiv.appendChild(title);
-
-      // 添加描述
-      const description = document.createElement('p');
-      description.textContent = data.description;
-      contentDiv.appendChild(description);
-
-      // 添加图像
-      const image = new Image();
-      image.src = data.image;
-      contentDiv.appendChild(image);
-
-      // 添加属性列表
-      const attributesList = document.createElement('ul');
-      data.attributes.forEach(attr => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${attr.trait_type}: ${attr.value}`;
-        attributesList.appendChild(listItem);
-      });
-      contentDiv.appendChild(attributesList);
-
-      // 添加所有权信息
-      const ownershipInfo = document.createElement('section');
-      ownershipInfo.innerHTML = `<strong>Current Owner:</strong> ${data.ownership.current_owner}`;
-      contentDiv.appendChild(ownershipInfo);
-
-      // 添加以前的所有者
-      const prevOwnersList = document.createElement('ul');
-      data.ownership.previous_owners.forEach(owner => {
-        const ownerItem = document.createElement('li');
-        ownerItem.textContent = `${owner.name}, acquired on ${owner.date_of_acquisition}`;
-        prevOwnersList.appendChild(ownerItem);
-      });
-      contentDiv.appendChild(prevOwnersList);
+      let content = `<div class="json-container">
+                       <h2>${data.title}</h2>
+                       <p>${data.description}</p>
+                       <div class="attribute"><span>Hair Color:</span> ${data.attributes[0].value}</div>
+                       <div class="attribute"><span>Eye Color:</span> ${data.attributes[1].value}</div>
+                       <div class="attribute"><span>Background Theme:</span> ${data.attributes[2].value}</div>
+                       <div class="attribute"><span>Current Owner:</span> ${data.ownership.current_owner}</div>
+                       <div class="attribute"><span>Previous Owner:</span> ${data.ownership.previous_owners[0].name}, acquired on ${data.ownership.previous_owners[0].date_of_acquisition}</div>
+                       <img src="${data.image}" alt="Artwork Image">
+                     </div>`;
+      document.getElementById('jsonContent').innerHTML = content;
     })
-    .catch(error => {
-      // 如果有错误，将错误信息打印到控制台
-      console.error('Error loading JSON:', error);
-    });
+    .catch(error => console.error('Error loading JSON:', error));
 };
 </script>
 </head>
 <body>
 <h1>My JSON Data</h1>
-<!-- JSON 数据将通过 JavaScript 动态填充到这里 -->
-<div id="jsonContent"></div>
+<div id="jsonContent">Loading...</div>
 </body>
 </html>

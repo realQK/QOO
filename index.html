@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>JSON Display</title>
+<script>
+// 等待窗口加载完成
+window.onload = function() {
+  // 使用 fetch API 加载 JSON 文件
+  fetch('MRK.json')
+    .then(response => response.json())
+    .then(data => {
+      const contentDiv = document.getElementById('jsonContent');
+      
+      // 添加标题
+      const title = document.createElement('h2');
+      title.textContent = data.title;
+      contentDiv.appendChild(title);
+
+      // 添加描述
+      const description = document.createElement('p');
+      description.textContent = data.description;
+      contentDiv.appendChild(description);
+
+      // 添加图像
+      const image = new Image();
+      image.src = data.image;
+      contentDiv.appendChild(image);
+
+      // 添加属性列表
+      const attributesList = document.createElement('ul');
+      data.attributes.forEach(attr => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${attr.trait_type}: ${attr.value}`;
+        attributesList.appendChild(listItem);
+      });
+      contentDiv.appendChild(attributesList);
+
+      // 添加所有权信息
+      const ownershipInfo = document.createElement('section');
+      ownershipInfo.innerHTML = `<strong>Current Owner:</strong> ${data.ownership.current_owner}`;
+      contentDiv.appendChild(ownershipInfo);
+
+      // 添加以前的所有者
+      const prevOwnersList = document.createElement('ul');
+      data.ownership.previous_owners.forEach(owner => {
+        const ownerItem = document.createElement('li');
+        ownerItem.textContent = `${owner.name}, acquired on ${owner.date_of_acquisition}`;
+        prevOwnersList.appendChild(ownerItem);
+      });
+      contentDiv.appendChild(prevOwnersList);
+    })
+    .catch(error => {
+      // 如果有错误，将错误信息打印到控制台
+      console.error('Error loading JSON:', error);
+    });
+};
+</script>
+</head>
+<body>
+<h1>My JSON Data</h1>
+<!-- JSON 数据将通过 JavaScript 动态填充到这里 -->
+<div id="jsonContent"></div>
+</body>
+</html>
